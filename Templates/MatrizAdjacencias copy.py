@@ -10,7 +10,7 @@ class MatrizAdjacencias:
     def __init__(self, numVertices): #Tem que passar a quantidade de vertices 
         print("Implementar construtor...")
         self.numVertices = numVertices
-        self.numArestas = 0
+        self.numArestas = 0``
         self.matriz = []
 
      #cria uma lista que começa com elementos do 0, ou seja, o range ta incrementando o i
