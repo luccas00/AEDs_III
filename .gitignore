@@ -1,0 +1,20 @@
+//ignore all from vscode and dotnetcore file
+.vscode/
+.vs/
+*.code-workspace
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.dotCover
+*.ncrunch*
+*.ncrunchsolution
+_ReSharper*/
+*.DotSettings.user
+*.idea
+*.sln.iml
+.idea/
+*.swp
+*~

@@ -1,5 +1,4 @@
 # Representação computacional de um grafo por meio de matriz de adjacências:
-
 class MatrizAdjacencias:
     # Inicializa o grafo:
     def __init__(self, numVertices):
