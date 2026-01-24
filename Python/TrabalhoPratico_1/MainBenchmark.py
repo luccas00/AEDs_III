@@ -6,6 +6,7 @@
 # - Timeout de 600s por execução (registra TEMPO LIMITE)
 # - Console detalhado: tabela por algoritmo (10 rodadas) + resumo por mapa
 # - Gera log.txt com o MESMO conteúdo do console
+# - Tabela 1 final consolidada (uma linha por mapa)
 # ------------------------------------------------------------------------------------
 
 import os
@@ -134,10 +135,10 @@ def print_tabela_rodadas(nome_algoritmo, tempos_execucao, custos_execucao, statu
     print_log(repetir_char("-", 90))
 
 
-def print_resumo_mapa(resultados):
+def print_resumo_mapa(nome_mapa, resultados):
     # imprime resumo do mapa em formato de tabela (médias)
     print_log("")
-    print_log("[Resumo Do Mapa] Médias (10 execuções)")
+    print_log(f"[Resumo Do Mapa] {nome_mapa} — Médias (10 execuções)")
     print_log(repetir_char("-", 90))
     print_log(f"{'Algoritmo':<20} | {'Tempo Médio (s)':<18} | {'Custo Médio':<15}")
     print_log(repetir_char("-", 90))
@@ -147,6 +148,26 @@ def print_resumo_mapa(resultados):
         print_log(f"{alg:<20} | {fmt_tempo(tempo_medio):<18} | {fmt_custo(custo_medio):<15}")
 
     print_log(repetir_char("-", 90))
+
+
+def print_tabela1_final(linhas_tabela):
+    # imprime a "Tabela 1" final consolidada (uma linha por mapa)
+    print_log("")
+    print_log(repetir_char("=", 130))
+    print_log("TABELA 1 — Comparação Entre Algoritmos De Caminhos Mínimos (Médias Em 10 Execuções)")
+    print_log(repetir_char("=", 130))
+    print_log(
+        f"{'Grafo':<20} | "
+        f"{'Dijkstra T.médio(s)':<18} | {'Dijkstra Custo médio':<20} | "
+        f"{'Bellman-Ford T.médio(s)':<22} | {'Bellman-Ford Custo médio':<24} | "
+        f"{'Floyd-Warshall T.médio(s)':<24} | {'Floyd-Warshall Custo médio':<26}"
+    )
+    print_log(repetir_char("-", 130))
+
+    for linha in linhas_tabela:
+        print_log(linha)
+
+    print_log(repetir_char("=", 130))
 
 
 # -----------------------------
@@ -220,30 +241,6 @@ def executar_com_timeout(nome_algoritmo, grafo, vertice_inicio, vertice_fim, tim
         return ("OK", tempo_execucao, custo_total)
 
     # se deu erro, devolve a mensagem no lugar do custo
-    return ("ERRO", None, custo_total)
-
-
-def executar_sem_timeout(nome_algoritmo, grafo, vertice_inicio, vertice_fim, timeout_segundos):
-    # (função opcional) executa sem timeout - útil apenas para testes
-    fila_resultado = mp.Queue()
-
-    processo = mp.Process(
-        target=_worker_algoritmo,
-        args=(nome_algoritmo, grafo, vertice_inicio, vertice_fim, fila_resultado)
-    )
-
-    processo.start()
-
-    # aguarda finalizar sem limite de tempo
-    processo.join()
-
-    if fila_resultado.empty():
-        return ("ERRO", None, "Sem retorno do processo")
-
-    status, tempo_execucao, custo_total = fila_resultado.get()
-    if status == "OK":
-        return ("OK", tempo_execucao, custo_total)
-
     return ("ERRO", None, custo_total)
 
 
@@ -336,6 +333,9 @@ def main():
     # lista de algoritmos que serão testados
     algoritmos = ["Dijkstra", "Bellman-Ford", "Floyd-Warshall"]
 
+    # guarda linhas para a Tabela 1 final (uma por mapa)
+    linhas_tabela = []
+
     # percorre cada mapa da pasta
     for caminho_mapa in mapas:
         # nome do arquivo do mapa (ex: map_10x10.txt)
@@ -352,7 +352,7 @@ def main():
 
         # executa benchmark para cada algoritmo
         for alg in algoritmos:
-            print_log(f"Executando {alg}...")
+            print_log(f"Executando {alg} (10 rodadas, com timeout)...")
 
             tempo_medio, custo_medio, tempos_execucao, custos_execucao, status_lista = benchmark_mapa_algoritmo(
                 alg, grafo, vertice_inicio, vertice_fim, repeticoes, timeout_segundos
@@ -367,12 +367,29 @@ def main():
             # imprime médias do algoritmo logo após a tabela
             print_log(f"MÉDIA {alg}: Tempo = {fmt_tempo(tempo_medio)} s | Custo = {fmt_custo(custo_medio)}")
 
-        # imprime resumo final do mapa (Tabela consolidada)
-        print_resumo_mapa(resultados)
+        # imprime resumo final do mapa (com nome do mapa no título)
+        print_resumo_mapa(nome_mapa, resultados)
+
+        # prepara a linha do mapa para a Tabela 1 final
+        d_t, d_c = resultados["Dijkstra"]
+        b_t, b_c = resultados["Bellman-Ford"]
+        f_t, f_c = resultados["Floyd-Warshall"]
+
+        linha_tabela = (
+            f"{nome_mapa:<20} | "
+            f"{fmt_tempo(d_t):<18} | {fmt_custo(d_c):<20} | "
+            f"{fmt_tempo(b_t):<22} | {fmt_custo(b_c):<24} | "
+            f"{fmt_tempo(f_t):<24} | {fmt_custo(f_c):<26}"
+        )
+
+        linhas_tabela.append(linha_tabela)
+
+    # imprime a Tabela 1 final consolidada
+    print_tabela1_final(linhas_tabela)
 
     print_log("")
     print_log(repetir_char("=", 90))
-    print_log("FIM DO BENCHMARK")
+    print_log("FIM DO BENCHMARK (COM TIMEOUT)")
     print_log(repetir_char("=", 90))
 
     # fecha o log no final

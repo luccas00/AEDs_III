@@ -3,12 +3,66 @@
 ## 👤 Discentes
 - **Luccas Vinicius P. A. Santos Carneiro**
 - **Thiago Ker Gama Nunes Carvalho**
+
 ---
 
 ## 📄 Descrição Geral
 Este projeto implementa e avalia **algoritmos clássicos de caminhos mínimos em grafos**, aplicados a mapas bidimensionais com diferentes dimensões e custos de terreno.
 
-Foram implementados os algoritmos **Dijkstra**, **Bellman-Ford** e **Floyd-Warshall**, seguindo **fielmente os pseudocódigos apresentados em sala**, além de um **módulo de benchmark** responsável por executar experimentos computacionais e coletar métricas de desempenho conforme a especificação do trabalho prático.
+Foram implementados os algoritmos **Dijkstra**, **Dijkstra Otimizado**, **Bellman-Ford** e **Floyd-Warshall**, seguindo **fielmente os pseudocódigos apresentados em sala**, além de **módulos de benchmark** responsáveis por executar experimentos computacionais e coletar métricas de desempenho conforme a especificação do trabalho prático.
+
+---
+
+## 📌 Interpretação do Problema (Mapa → Grafo → Caminho Mínimo)
+
+### Objetivo
+Dado um mapa em formato `.txt`, com:
+- `I` = início
+- `F` = fim
+- `#` = obstáculo (célula inválida)
+- `W`, `S`, `G` = tipos de terreno com custo de movimentação
+
+O programa deve calcular o **menor custo total** para ir de `I` até `F`, movendo-se apenas em **4 direções** (cima/baixo/esquerda/direita).
+
+### Como o mapa vira grafo
+O grid (matriz de caracteres) é convertido em um grafo ponderado dirigido, onde:
+
+- Cada célula `(linha, coluna)` vira um vértice `v`.
+- O índice do vértice é calculado por:
+  - `v = linha * colunas + coluna`
+
+Exemplo (mapa com `colunas = 10`):
+- `(0,0) -> 0`
+- `(0,1) -> 1`
+- `(1,0) -> 10`
+- `(1,1) -> 11`
+
+### Arestas e pesos
+Para cada célula válida (≠ `#`), o código cria arestas para seus vizinhos válidos (4-direções).
+O peso da aresta `u -> v` é o custo **de entrar na célula de destino**.
+
+Custos (conforme `Mapa.py`):
+- `W = 5`
+- `S = 3`
+- `G = 1`
+- `I` e `F = 0`
+
+Isso significa que o algoritmo minimiza a soma dos custos das células visitadas (exceto início, que fica com custo 0 na prática).
+
+### Como cada algoritmo é usado no projeto
+- **Dijkstra** / **Bellman-Ford**: calculam menor caminho a partir de `I` para todos os vértices, e o programa utiliza `dist[F]`.
+- **Floyd-Warshall**: calcula menor caminho entre **todos os pares (i, j)**, e o programa utiliza `dist[I][F]`.
+
+O Floyd-Warshall faz mais trabalho do que o necessário para este problema (pois resolve all-pairs), mas é exigido para comparação de desempenho no relatório.
+
+### Impacto do tamanho do mapa no desempenho
+Se o mapa tem `L x C` células:
+- `V = L*C` vértices
+- `E ≈ 4V` arestas (em mapas sem muitos obstáculos)
+
+Consequências:
+- Dijkstra e Bellman-Ford tendem a rodar bem em mapas médios.
+- Floyd-Warshall cresce com `V³`, ficando inviável em mapas grandes.
 
 ---
 
@@ -23,6 +77,8 @@ Foram implementados os algoritmos **Dijkstra**, **Bellman-Ford** e **Floyd-Warsh
   - **Dijkstra**
   - **Bellman-Ford**
   - **Floyd-Warshall**
+- Implementação adicional:
+  - **Dijkstra Otimizado** (quebra antecipada para nós desconexos).
 - Reconstrução do caminho mínimo a partir da estrutura de predecessores.
 - Leitura de mapas em formato `.txt` contendo:
   - Terrenos com diferentes custos.
@@ -40,19 +96,17 @@ Foram implementados os algoritmos **Dijkstra**, **Bellman-Ford** e **Floyd-Warsh
   - Tempo de execução.
   - Custo do caminho mínimo.
 - Comparação sistemática entre algoritmos.
-- Aplicação de **timeout de 600 segundos** por execução (quando habilitado).
+- Benchmark com timeout (600s) quando habilitado.
 - Registro automático de resultados no console **e em arquivo `log.txt`**.
-- Saída formatada em **tabelas legíveis**, facilitando análise e uso no relatório.
+- Saída formatada em **tabelas legíveis**, incluindo:
+  - Tabelas por rodada (10 execuções)
+  - Resumo por mapa
+  - **Tabela 1 final consolidada** (uma linha por mapa)
 
 ---
 
 ## ⚙️ Tecnologias Utilizadas
 - **Python 3**
-- Conceitos fundamentais de:
-  - Grafos
-  - Algoritmos de Caminhos Mínimos
-  - Análise de Complexidade
-  - Programação Multiprocessada (para controle de tempo)
 
 ---
 
@@ -72,27 +126,16 @@ Foram implementados os algoritmos **Dijkstra**, **Bellman-Ford** e **Floyd-Warsh
 ### Algoritmos de Caminhos Mínimos
 - **Dijkstra**
   - Implementação didática, sem estruturas avançadas.
-  - Versão com e sem otimização para nós desconexos.
+  - Calcula `dist[F]` a partir da origem `I`.
+- **Dijkstra Otimizado**
+  - Mesma lógica do pseudocódigo.
+  - Adiciona quebra antecipada quando o menor valor em abertos é `INF` (nós desconexos).
 - **Bellman-Ford**
   - Implementação fiel ao pseudocódigo.
   - Interrupção antecipada quando não há atualização.
 - **Floyd-Warshall**
   - Cálculo de todos os pares de caminhos mínimos.
-  - Uso de matrizes de distância e predecessores.
-
----
-
-### Benchmark e Análise Experimental
-- Execução automática em múltiplos mapas.
-- Coleta de:
-  - Tempo individual por rodada.
-  - Custo individual por rodada.
-- Geração de:
-  - Tabelas por algoritmo (10 execuções).
-  - Resumo consolidado por mapa.
-- Registro completo no:
-  - **Console**
-  - **Arquivo `log.txt`**
+  - O projeto utiliza apenas `dist[I][F]` após o cálculo.
 
 ---
 
@@ -100,68 +143,91 @@ Foram implementados os algoritmos **Dijkstra**, **Bellman-Ford** e **Floyd-Warsh
 
 - **Algoritmos de Caminho Mínimo**  
   `Algoritmos.py`
-- **Estruturas de Grafo**  
+- **Estruturas de Grafo (fornecidas pelo professor)**  
   `Grafo.py`
 - **Leitura de Mapas e Geração de Grafos**  
   `Mapa.py`
-- **Execução simples (1 rodada por algoritmo)**  
+
+### Execuções
+- **Execução simples (3 algoritmos)**  
   `main.py`
-- **Execução de Experimentos Computacionais (benchmark)**  
+- **Execução simples V2 (4 algoritmos, inclui Dijkstra Otimizado)**  
+  `main_v2.py`
+
+### Benchmarks
+- **Benchmark com timeout (600s) + log.txt + tabela por rodada + Tabela 1 final**  
   `main_benchmark.py`
-- **Registro automático dos resultados**  
-  `log.txt`
+- **Benchmark V2 sem timeout (inclui Dijkstra Otimizado) + log.txt + Tabela 1 final**  
+  `main_benchmark_v2.py`
 
 ---
 
 ## 🧭 Fluxo de Execução
 1. O programa lê um mapa `.txt`.
-2. O mapa é convertido em um grafo ponderado.
-3. O algoritmo escolhido calcula o caminho mínimo entre `I` e `F`.
+2. O mapa é convertido em um grafo ponderado:
+   - Cada célula válida vira um vértice.
+   - Movimentos 4-direções viram arestas.
+   - O peso da aresta é o custo do terreno de destino.
+3. O algoritmo calcula as distâncias mínimas.
 4. O caminho é reconstruído via predecessores.
-5. O mapa de saída é salvo com o caminho marcado.
-6. No modo benchmark:
+5. O mapa de saída é salvo com o caminho marcado (`*`).
+6. Nos benchmarks:
    - Cada algoritmo é executado **10 vezes por mapa**.
-   - São calculadas médias de tempo e custo.
-   - Resultados são exibidos em tabela e gravados em `log.txt`.
+   - O programa calcula **tempo médio** e **custo médio**.
+   - O console imprime tabelas por rodada e resumo.
+   - O mesmo conteúdo é gravado em `log.txt`.
 
 ---
 
 ## ▶️ Execução
 
-### Execução Simples (1 rodada por algoritmo)
+### Execução Simples (3 algoritmos)
 ```
 python main.py <arquivo_mapa.txt>
 ```
 
-### Execução dos Experimentos Computacionais (Benchmark)
+### Execução Simples V2 (inclui Dijkstra Otimizado)
+```
+python main_v2.py <arquivo_mapa.txt>
+```
+
+### Benchmark (com timeout 600s)
 ```
 python main_benchmark.py <pasta_mapas>
+```
+
+### Benchmark V2 (sem timeout, inclui Dijkstra Otimizado)
+```
+python main_benchmark_v2.py <pasta_mapas>
 ```
 
 Exemplo:
 ```
 python main_benchmark.py mapas/
+python main_benchmark_v2.py mapas/
 ```
 
 ---
 
 ## 📊 Saída Esperada
-- Console:
-  - Tabelas detalhadas por algoritmo.
-  - Médias por mapa.
-- Arquivos:
-  - `saida_dijkstra.txt`
-  - `saida_bellman_ford.txt`
-  - `saida_floyd_warshall.txt`
-  - `log.txt`
+
+### Arquivos de saída do caminho
+- `saida_dijkstra.txt`
+- `saida_dijkstra_otimizado.txt` (apenas no V2)
+- `saida_bellman_ford.txt`
+- `saida_floyd_warshall.txt`
+
+### Logs e Relatórios de Experimento
+- `log.txt`  
+  Contém exatamente o mesmo conteúdo impresso no terminal durante o benchmark.
 
 ---
 
 ## 📈 Análise Experimental
-Os resultados obtidos permitem discutir:
-- Qual algoritmo apresenta melhor desempenho para mapas grandes.
+Os resultados permitem discutir:
+- Qual algoritmo apresenta melhor desempenho e maior adequação ao problema.
 - Diferenças entre a complexidade teórica e o comportamento observado.
-- Impacto do tamanho e da estrutura do mapa no tempo de execução.
+- Impacto do tamanho e da estrutura do mapa nos tempos e custos.
 - Limitações práticas do Floyd-Warshall em grafos grandes.
 
 ---
