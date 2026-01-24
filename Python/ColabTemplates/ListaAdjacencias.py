@@ -1,3 +1,4 @@
+
 # Representação computacional de um grafo por meio de lista de adjacências:
 class ListaAdjacencias:
     # Inicializa o grafo:
