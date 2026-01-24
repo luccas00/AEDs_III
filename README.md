@@ -1,8 +1,8 @@
 # CSI115 – 25.2 – Algoritmos e Estruturas de Dados III
 
 ## 👤 Discentes
-**Luccas Vinicius P. A. Santos Carneiro**
-**Thiago Ker Gama Nunes Carvalho**
+- **Luccas Vinicius P. A. Santos Carneiro**
+- **Thiago Ker Gama Nunes Carvalho**
 ---
 
 ## 📄 Descrição Geral
