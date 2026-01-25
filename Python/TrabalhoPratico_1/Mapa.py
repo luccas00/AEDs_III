@@ -1,12 +1,10 @@
-# mapa.py
+
 # ------------------------------------------------------------------------------------
 # Responsável por carregar o mapa, converter células em vértices e gerar o grafo final
 # ------------------------------------------------------------------------------------
 
-INF = float("inf")  # não utilizado aqui, mantido para consistência com o restante do projeto
-
 def custo_terreno(c):
-    # Retorna o custo para ENTRAR em uma célula do tipo 'c' (conforme especificação)
+    # Retorna o custo para ENTRAR em uma célula do tipo 'c'
     if c == 'W': return 5  # Water
     if c == 'S': return 3  # Sand
     if c == 'G': return 1  # Ground
@@ -28,7 +26,7 @@ def carregar_mapa(nome_arquivo):
                 # converte a string em lista de caracteres
                 grid.append(list(linha))
 
-    # validação básica: mapa não pode ser vazio
+    # mapa não pode ser vazio
     if not grid:
         raise ValueError("Mapa vazio ou arquivo inválido.")
 
@@ -36,7 +34,7 @@ def carregar_mapa(nome_arquivo):
     total_linhas = len(grid)
     total_colunas = len(grid[0])
 
-    # valida se todas as linhas têm o mesmo tamanho (evita index error)
+    # valida se todas as linhas têm o mesmo tamanho
     for linha in grid:
         if len(linha) != total_colunas:
             raise ValueError("Mapa inválido: linhas com tamanhos diferentes.")
@@ -56,16 +54,16 @@ def carregar_mapa(nome_arquivo):
                 quantidade_fim += 1
                 indice_fim = i * total_colunas + j  # converte (i,j) para índice de vértice
 
-    # exige exatamente um I e um F (conforme mensagem do seu erro)
+    # exige exatamente um I e um F
     if quantidade_inicio != 1 or quantidade_fim != 1:
         raise ValueError("Mapa deve conter exatamente um I e um F.")
 
-    # importa a estrutura de grafo definida pelo professor
+    # importa a estrutura de grafo definida
     from Grafo import ListaAdjacencias
 
     # cria grafo com um vértice para cada célula do grid
     grafo = ListaAdjacencias(total_linhas * total_colunas)
-
+    
     # movimentos permitidos: cima, baixo, esquerda, direita (4-vizinhos)
     direcoes_movimento = [(-1, 0), (1, 0), (0, -1), (0, 1)]
 

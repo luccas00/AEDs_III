@@ -1,4 +1,4 @@
-# main_benchmark.py
+
 # ------------------------------------------------------------------------------------
 # Benchmark TP1:
 # - Para cada mapa em uma pasta, executa 10 vezes cada algoritmo
@@ -6,7 +6,6 @@
 # - Timeout de 600s por execução (registra TEMPO LIMITE)
 # - Console detalhado: tabela por algoritmo (10 rodadas) + resumo por mapa
 # - Gera log.txt com o MESMO conteúdo do console
-# - Tabela 1 final consolidada (uma linha por mapa)
 # ------------------------------------------------------------------------------------
 
 import os
@@ -16,13 +15,12 @@ import multiprocessing as mp
 
 from Mapa import carregar_mapa
 from Algoritmos import (
-    dijkstra_iniciante as dijkstra,
-    bellman_ford_iniciante as bellman_ford,
-    floyd_warshall_iniciante as floyd_warshall
+    dijkstra as dijkstra,
+    bellman_ford as bellman_ford,
+    floyd_warshall as floyd_warshall
 )
 
-INF = float("inf")  # usado como valor de "infinito" nas distâncias
-
+INF = float("inf")
 
 # -----------------------------
 # LOG (console + arquivo)
@@ -82,7 +80,6 @@ def fmt_custo(valor):
     if valor == INF:
         return "INF"
 
-    # custo normalmente é inteiro (0,1,3,5...), mas pode vir como float
     if isinstance(valor, float) and valor.is_integer():
         return str(int(valor))
 
@@ -150,11 +147,11 @@ def print_resumo_mapa(nome_mapa, resultados):
     print_log(repetir_char("-", 90))
 
 
-def print_tabela1_final(linhas_tabela):
-    # imprime a "Tabela 1" final consolidada (uma linha por mapa)
+def print_tabela_final(linhas_tabela):
+    # imprime a "Tabela" final consolidada (uma linha por mapa)
     print_log("")
     print_log(repetir_char("=", 130))
-    print_log("TABELA 1 — Comparação Entre Algoritmos De Caminhos Mínimos (Médias Em 10 Execuções)")
+    print_log("TABELA — Comparação Entre Algoritmos De Caminhos Mínimos (Médias Em 10 Execuções)")
     print_log(repetir_char("=", 130))
     print_log(
         f"{'Grafo':<20} | "
@@ -304,7 +301,7 @@ def main():
         return
 
     # abre log no início (mesmo conteúdo do console)
-    log_file = open("log.txt", "w", encoding="utf-8")
+    log_file = open("log_benchmark.txt", "w", encoding="utf-8")
 
     # pasta onde estão os arquivos .txt dos mapas
     pasta_mapas = sys.argv[1]
@@ -328,7 +325,7 @@ def main():
     repeticoes = 10
 
     # conforme especificação: 600 segundos como tempo limite por execução
-    timeout_segundos = 600
+    timeout_segundos = 300
 
     # lista de algoritmos que serão testados
     algoritmos = ["Dijkstra", "Bellman-Ford", "Floyd-Warshall"]
@@ -384,8 +381,8 @@ def main():
 
         linhas_tabela.append(linha_tabela)
 
-    # imprime a Tabela 1 final consolidada
-    print_tabela1_final(linhas_tabela)
+    # imprime a Tabela final
+    print_tabela_final(linhas_tabela)
 
     print_log("")
     print_log(repetir_char("=", 90))

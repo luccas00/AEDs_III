@@ -1,0 +1,4 @@
+Nome do dispositivo	SMART97006
+Processador	11th Gen Intel(R) Core(TM) i7-1165G7 @ 2.80GHz (1.69 GHz)
+RAM instalada	32,0 GB (utilizável: 31,7 GB)
+Sistema operacional Windows 11 de 64 bits

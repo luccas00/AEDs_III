@@ -1,4 +1,4 @@
-# main.py
+
 # ------------------------------------------------------------------------------------
 # Ponto de entrada do programa. Executa Dijkstra, Bellman-Ford e Floyd-Warshall.
 # ------------------------------------------------------------------------------------
@@ -8,16 +8,15 @@ import time
 
 from Mapa import carregar_mapa, marcar_caminho, salvar_mapa
 
-# Importa os algoritmos com alias para manter o restante do main funcionando
 from Algoritmos import (
-    dijkstra_iniciante as dijkstra,
-    bellman_ford_iniciante as bellman_ford,
-    floyd_warshall_iniciante as floyd_warshall,
+    dijkstra as dijkstra,
+    bellman_ford as bellman_ford,
+    floyd_warshall as floyd_warshall,
     reconstruir_caminho_prev,
     reconstruir_caminho_floyd
 )
 
-INF = float("inf")  # usado para identificar ausência de caminho
+INF = float("inf")
 
 def executar_algoritmo(nome_algoritmo, func_execucao, grid, linhas, colunas, inicio, fim, grafo, arquivo_saida):
     # mede tempo de execução do algoritmo

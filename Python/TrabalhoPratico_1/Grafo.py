@@ -1,10 +1,10 @@
-# grafo.py
+
 # --------------------------------------------------------------------
-# Estruturas de Grafo utilizadas pelo TP1 (matriz/lista de adjacências)
+# Estruturas de Grafo utilizadas Matriz ou Lista de adjacências
+# Implementação baseada no material da disciplina
 # --------------------------------------------------------------------
 
 class MatrizAdjacencias:
-    # Implementação baseada no material da disciplina
     def __init__(self, numVertices):
         self.numVertices = numVertices
         self.numArestas = 0

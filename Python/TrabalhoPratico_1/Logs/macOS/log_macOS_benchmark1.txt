@@ -1,4 +1,9 @@
 
+Nome do dispositivo	Luccas MacBook Pro
+Sistema Operacional: macOS Sonoma 14.8.1
+Processador: Intel Core i7 2,6 GHz (6 núcleos)
+Memória RAM: 16 GB DDR4 2400 MHz
+
 ==========================================================================================
 MAPA: Toy.txt
 ==========================================================================================
@@ -683,3 +688,8 @@ Floyd-Warshall       | TEMPO LIMITE       | TEMPO LIMITE
 ==========================================================================================
 FIM DO BENCHMARK
 ==========================================================================================
+
+Nome do dispositivo	Luccas MacBook Pro
+Sistema Operacional: macOS Sonoma 14.8.1
+Processador: Intel Core i7 2,6 GHz (6 núcleos)
+Memória RAM: 16 GB DDR4 2400 MHz

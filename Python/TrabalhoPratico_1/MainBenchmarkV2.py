@@ -1,13 +1,9 @@
-# main_benchmark_v2.py
+
 # ------------------------------------------------------------------------------------
-# Benchmark TP1 (V2) - SEM LIMITE DE TEMPO:
+# Benchmark V2 - SEM LIMITE DE TEMPO:
 # - Para cada mapa em uma pasta, executa 10 vezes cada algoritmo
 # - Calcula média do tempo e do custo
-# - Executa também o Dijkstra Otimizado
-# - Não usa timeout e não usa multiprocessing (mais iniciante e direto)
 # - Gera log.txt com o mesmo conteúdo do console
-# - Tabela 1 final consolidada (uma linha por mapa)
-# - Resumo por mapa contém nome do mapa no título (facilita leitura)
 # ------------------------------------------------------------------------------------
 
 import os
@@ -17,10 +13,8 @@ import time
 from Mapa import carregar_mapa
 
 from Algoritmos import (
-    dijkstra_iniciante,
-    dijkstra_iniciante_otimizado,
-    bellman_ford_iniciante,
-    floyd_warshall_iniciante
+    dijkstra,
+    bellman_ford
 )
 
 INF = float("inf")
@@ -109,7 +103,7 @@ def print_resumo_mapa(nome_mapa, resultados):
     print_log(f"{'Algoritmo':<25} | {'Tempo Médio (s)':<18} | {'Custo Médio':<15}")
     print_log(repetir_char("-", 110))
 
-    ordem = ["Dijkstra", "Dijkstra Otimizado", "Bellman-Ford", "Floyd-Warshall"]
+    ordem = ["Dijkstra", "Bellman-Ford"]
     for alg in ordem:
         tempo_medio, custo_medio = resultados[alg]
         print_log(f"{alg:<25} | {fmt_tempo(tempo_medio):<18} | {fmt_custo(custo_medio):<15}")
@@ -126,9 +120,7 @@ def print_tabela1_final(linhas_tabela):
     print_log(
         f"{'Grafo':<20} | "
         f"{'Dijkstra T.médio(s)':<18} | {'Dijkstra Custo médio':<20} | "
-        f"{'Dijkstra Otim. T.médio(s)':<24} | {'Dijkstra Otim. Custo médio':<28} | "
         f"{'Bellman-Ford T.médio(s)':<22} | {'Bellman-Ford Custo médio':<24} | "
-        f"{'Floyd-Warshall T.médio(s)':<24} | {'Floyd-Warshall Custo médio':<26}"
     )
     print_log(repetir_char("-", 150))
 
@@ -139,26 +131,18 @@ def print_tabela1_final(linhas_tabela):
 
 
 # -----------------------------
-# Execução SEM timeout (rodando direto)
+# Execução SEM timeout
 # -----------------------------
 def executar_algoritmo_sem_timeout(nome_algoritmo, grafo, inicio, fim):
     inicio_tempo = time.perf_counter()
 
     if nome_algoritmo == "Dijkstra":
-        distancias, _prev = dijkstra_iniciante(grafo, inicio)
-        custo_total = distancias[fim]
-
-    elif nome_algoritmo == "Dijkstra Otimizado":
-        distancias, _prev = dijkstra_iniciante_otimizado(grafo, inicio)
+        distancias, _prev = dijkstra(grafo, inicio)
         custo_total = distancias[fim]
 
     elif nome_algoritmo == "Bellman-Ford":
-        distancias, _prev = bellman_ford_iniciante(grafo, inicio)
+        distancias, _prev = bellman_ford(grafo, inicio)
         custo_total = distancias[fim]
-
-    elif nome_algoritmo == "Floyd-Warshall":
-        distancias, _prev = floyd_warshall_iniciante(grafo)
-        custo_total = distancias[inicio][fim]
 
     else:
         raise ValueError("Algoritmo inválido")
@@ -170,7 +154,7 @@ def executar_algoritmo_sem_timeout(nome_algoritmo, grafo, inicio, fim):
 
 
 # -----------------------------
-# Benchmark por mapa/algoritmo
+# Benchmark por mapa e algoritmo
 # -----------------------------
 def benchmark_mapa_algoritmo(nome_algoritmo, grafo, inicio, fim, repeticoes):
     tempos_execucao = []
@@ -204,7 +188,7 @@ def main():
         return
 
     # abre log
-    log_file = open("log.txt", "w", encoding="utf-8")
+    log_file = open("log_benchmark_v2.txt", "w", encoding="utf-8")
 
     pasta_mapas = sys.argv[1]
     if not os.path.isdir(pasta_mapas):
@@ -220,7 +204,7 @@ def main():
 
     repeticoes = 10
 
-    algoritmos = ["Dijkstra", "Dijkstra Otimizado", "Bellman-Ford", "Floyd-Warshall"]
+    algoritmos = ["Dijkstra", "Bellman-Ford"]
 
     # guarda linhas para a Tabela 1 final (uma por mapa)
     linhas_tabela = []
@@ -229,7 +213,7 @@ def main():
         nome_mapa = os.path.basename(caminho_mapa)
         print_cabecalho_mapa(nome_mapa)
 
-        # carrega mapa e cria grafo (fora do tempo do algoritmo, igual no main)
+        # carrega mapa e cria grafo
         grid, linhas, colunas, inicio, fim, grafo = carregar_mapa(caminho_mapa)
 
         resultados = {}
@@ -252,23 +236,19 @@ def main():
         # resumo do mapa com nome do mapa no título
         print_resumo_mapa(nome_mapa, resultados)
 
-        # prepara a linha do mapa para a Tabela 1 final
+        # prepara a linha do mapa para a tabela final
         d_t, d_c = resultados["Dijkstra"]
-        do_t, do_c = resultados["Dijkstra Otimizado"]
         b_t, b_c = resultados["Bellman-Ford"]
-        f_t, f_c = resultados["Floyd-Warshall"]
 
         linha_tabela = (
             f"{nome_mapa:<20} | "
             f"{fmt_tempo(d_t):<18} | {fmt_custo(d_c):<20} | "
-            f"{fmt_tempo(do_t):<24} | {fmt_custo(do_c):<28} | "
             f"{fmt_tempo(b_t):<22} | {fmt_custo(b_c):<24} | "
-            f"{fmt_tempo(f_t):<24} | {fmt_custo(f_c):<26}"
         )
 
         linhas_tabela.append(linha_tabela)
 
-    # imprime a Tabela 1 final consolidada
+    # imprime a tabela final
     print_tabela1_final(linhas_tabela)
 
     print_log("")
