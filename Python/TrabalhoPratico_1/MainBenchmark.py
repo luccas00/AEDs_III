@@ -1,11 +1,9 @@
 
 # ------------------------------------------------------------------------------------
-# Benchmark TP1:
+# Benchmark - COM LIMITE DE TEMPO:
 # - Para cada mapa em uma pasta, executa 10 vezes cada algoritmo
 # - Calcula média do tempo e do custo
-# - Timeout de 600s por execução (registra TEMPO LIMITE)
-# - Console detalhado: tabela por algoritmo (10 rodadas) + resumo por mapa
-# - Gera log.txt com o MESMO conteúdo do console
+# - Gera log.txt com o mesmo conteúdo do console
 # ------------------------------------------------------------------------------------
 
 import os

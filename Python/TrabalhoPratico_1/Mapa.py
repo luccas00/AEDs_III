@@ -3,6 +3,9 @@
 # Responsável por carregar o mapa, converter células em vértices e gerar o grafo final
 # ------------------------------------------------------------------------------------
 
+# importa a estrutura de grafo definida
+from Grafo import ListaAdjacencias
+
 def custo_terreno(c):
     # Retorna o custo para ENTRAR em uma célula do tipo 'c'
     if c == 'W': return 5  # Water
@@ -57,9 +60,6 @@ def carregar_mapa(nome_arquivo):
     # exige exatamente um I e um F
     if quantidade_inicio != 1 or quantidade_fim != 1:
         raise ValueError("Mapa deve conter exatamente um I e um F.")
-
-    # importa a estrutura de grafo definida
-    from Grafo import ListaAdjacencias
 
     # cria grafo com um vértice para cada célula do grid
     grafo = ListaAdjacencias(total_linhas * total_colunas)

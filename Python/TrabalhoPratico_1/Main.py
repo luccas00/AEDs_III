@@ -1,8 +1,4 @@
 
-# ------------------------------------------------------------------------------------
-# Ponto de entrada do programa. Executa Dijkstra, Bellman-Ford e Floyd-Warshall.
-# ------------------------------------------------------------------------------------
-
 import sys
 import time
 

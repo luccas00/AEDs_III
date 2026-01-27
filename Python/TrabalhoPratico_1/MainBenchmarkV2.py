@@ -111,7 +111,7 @@ def print_resumo_mapa(nome_mapa, resultados):
     print_log(repetir_char("-", 110))
 
 
-def print_tabela1_final(linhas_tabela):
+def print_tabela_final(linhas_tabela):
     # imprime a "Tabela 1" final consolidada (uma linha por mapa)
     print_log("")
     print_log(repetir_char("=", 150))
@@ -249,7 +249,7 @@ def main():
         linhas_tabela.append(linha_tabela)
 
     # imprime a tabela final
-    print_tabela1_final(linhas_tabela)
+    print_tabela_final(linhas_tabela)
 
     print_log("")
     print_log(repetir_char("=", 110))
